@@ -30,20 +30,9 @@ void print_list(node_int * head, int index)
     }
 }
 
-/* declare the array */
-node_int* hash_table[NUMSIZE];
 
-/* init each list (first node) in the array */
-void init_hash()
-{   
-    int i=0;
-    while (i<NUMSIZE)
-    {
-        hash_table[i] = (node_int *) malloc(sizeof(node_int));
-        i++;
-    }
-    
-}
+
+
 
 /* push to hash */
 void push_to_hash(int index, char* filename)
@@ -79,6 +68,21 @@ void push_to_hash(int index, char* filename)
 
 }
 
+/* declare the array */
+node_int* hash_table[NUMSIZE];
+    
+/* init each list (first node) in the array */
+void init_hash()
+{   
+    int i=0;
+    while (i<NUMSIZE)
+    {
+        hash_table[i] = (node_int *) malloc(sizeof(node_int));
+        i++;
+    }
+    
+}
+
 int main(int argc, char **argv)
 {
     int i = 1; /* argv[0] is the program itself, so we need to iterate arguments from 1 */    
@@ -86,7 +90,8 @@ int main(int argc, char **argv)
     char buff[BUFSIZE]; /* a buffer to hold the data from the input */
     int k = 0;
 
-    init_hash(hash_table);
+    /* init all the cells in the array */
+    init_hash();
     
     /* handle input */
     while(i < argc)
@@ -96,7 +101,7 @@ int main(int argc, char **argv)
         /* loop throw each number in the current input */
         while (fscanf(fp,"%s ",buff)==1)
         {
-            push_to_hash(atoi(buff),argv[i]);
+            push_to_hash(atoi(buff),argv[i]); /* put the value in the right place in the hash */
         }
             
         fclose(fp);  /* close the file */ 
@@ -105,13 +110,11 @@ int main(int argc, char **argv)
     }
     
     printf("\nPRINT LIST \n");
-    /* */
     while (k < NUMSIZE)
     {
         print_list(hash_table[k],k); 
         k++;
     }
-    
     
     printf("\n");
     return 0;
