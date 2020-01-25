@@ -1,18 +1,13 @@
 #include "header.h"
 
-void push(node_int * head)
+void push(node_int * node, char* filename)
 {
-    node_int * current = head;
+    node_int * current = node;
     
-
-    while (current->next != NULL)
-    {
-        current = current->next;
-    }
-        
     /* now we can add a new variable */
-    current->next = (node_int *) malloc(sizeof(node_int));
-    current->next->val = 1;
+
+    current->next->filename = filename;
+    current->next->val = current->next->val + 1;
     current->next->next = NULL;
 
 }
@@ -23,7 +18,7 @@ void print_list(node_int * head)
 
     while (current != NULL)
     {
-        printf("%d\n", current->val);
+        printf("%d ,  %s\n", current->val, current->filename);
         current = current->next;
     }
 }
@@ -44,20 +39,36 @@ void init_hash()
 }
 
 /* push to hash */
-void push_to_hash(int index, int argumentNumber)
+void push_to_hash(int index, char* filename)
 {
-    int i = 0;
+    int newNode = 1;
     node_int * nodeToUpdate = hash_table[index];
-    /*node_int * current = nodeToUpdate;*/
-
-        
-    while (nodeToUpdate->next != NULL && i != argumentNumber)
+    
+    /* check if this value has a list */
+    if(nodeToUpdate->next != NULL)
     {
-        nodeToUpdate = nodeToUpdate->next;
-        i++;
-    }   
-
-    push(nodeToUpdate);
+        while (nodeToUpdate->next != NULL )
+        {
+            
+            printf("\nstrcmp: %d %d\n", strcmp(nodeToUpdate->next->filename,filename), nodeToUpdate->next->val);
+            
+            if(strcmp(nodeToUpdate->next->filename,filename) == 0)
+            {
+                printf("update index %d file %s - %s %d\n", index, filename, nodeToUpdate->next->filename, nodeToUpdate->next->val);
+                push(nodeToUpdate,filename);   
+                printf("update index %d file %s - %s %d\n", index, filename, nodeToUpdate->next->filename, nodeToUpdate->next->val);
+                newNode = 0;           
+            }
+                
+            nodeToUpdate = nodeToUpdate->next;
+            
+        }                 
+    }
+     
+    if (newNode == 1) {
+        nodeToUpdate->next = (node_int *) malloc(sizeof(node_int));            
+        push(nodeToUpdate,filename);
+    }
 
 }
 
@@ -76,7 +87,7 @@ int main(int argc, char **argv)
     while(i < argc)
     {
         printf("\nHandle file number: %d\n", i);
-
+        printf("\nHandle file name: %s\n", argv[i]);
         fp = fopen(argv[i], "r"); /* "r" = open for reading */
 
         /* loop throw each number in the current input */
@@ -85,7 +96,7 @@ int main(int argc, char **argv)
             printf("%d\n", atoi(buff));
             
             /*push(hash_table[atoi(buff)],1);*/
-            push_to_hash(atoi(buff),i);
+            push_to_hash(atoi(buff),argv[i]);
         }
             
         fclose(fp);  /* close the file */ 
@@ -95,7 +106,14 @@ int main(int argc, char **argv)
     
     printf("\nPRINT LIST \n");
     /*push(hash_table[2],4);*/
-    print_list(hash_table[7]);        
+    print_list(hash_table[7]);
+    printf("\n");
+    print_list(hash_table[24]);
+    printf("\n");
+    print_list(hash_table[23]);  
+
+    printf("\n");
+    print_list(hash_table[9]);        
  
     printf("\n");
     return 0;

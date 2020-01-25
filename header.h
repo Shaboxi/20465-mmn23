@@ -10,11 +10,12 @@
 /* define a list of ints */
 typedef struct node {
     int val;
+    char * filename;
     struct node * next;
 }node_int;
 
 node_int* hash_table[NUMSIZE];
 
 /* actions on the list */
-void push(node_int * head);
+void push(node_int * node, char* filename);
 void print_list(node_int * head);
