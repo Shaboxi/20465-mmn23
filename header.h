@@ -5,6 +5,7 @@
 #include <time.h>
 #include <unistd.h>
 #define BUFSIZE 100
+#define NUMSIZE 29
 
 /* define a list of ints */
 typedef struct node {
@@ -12,8 +13,8 @@ typedef struct node {
     struct node * next;
 }node_int;
 
-typedef node_int hash_table[29];
+node_int* hash_table[NUMSIZE];
 
 /* actions on the list */
-void push(node_int * head, int val);
+void push(node_int * head);
 void print_list(node_int * head);
