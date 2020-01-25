@@ -18,4 +18,4 @@ node_int* hash_table[NUMSIZE];
 
 /* actions on the list */
 void push(node_int * node, char* filename);
-void print_list(node_int * head);
+void print_list(node_int * head, int index);

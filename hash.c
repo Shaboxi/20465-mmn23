@@ -1,25 +1,32 @@
 #include "header.h"
 
+/* update the value (and filename) of a given node */
 void push(node_int * node, char* filename)
 {
     node_int * current = node;
     
-    /* now we can add a new variable */
-
+    /* update a node */
     current->next->filename = filename;
     current->next->val = current->next->val + 1;
     current->next->next = NULL;
-
 }
 
-void print_list(node_int * head)
+/* print the data */
+void print_list(node_int * head, int index)
 {
     node_int * current = head;
 
-    while (current != NULL)
+    if(current->next != NULL)
     {
-        printf("%d ,  %s\n", current->val, current->filename);
         current = current->next;
+        printf("The value %d: ", index);
+
+        while (current != NULL)
+        {
+            printf("appears %d time in file %s; ", current->val, current->filename);            
+            current = current->next;
+        }
+        printf("\n");
     }
 }
 
@@ -41,7 +48,7 @@ void init_hash()
 /* push to hash */
 void push_to_hash(int index, char* filename)
 {
-    int newNode = 1;
+    int newNode = 1; /* set flag, if 1 thin this value not found in this file, if 0 this value is found in this input */
     node_int * nodeToUpdate = hash_table[index];
     
     /* check if this value has a list */
@@ -49,14 +56,10 @@ void push_to_hash(int index, char* filename)
     {
         while (nodeToUpdate->next != NULL )
         {
-            
-            printf("\nstrcmp: %d %d\n", strcmp(nodeToUpdate->next->filename,filename), nodeToUpdate->next->val);
-            
+            /* if this value already exists in this input file */            
             if(strcmp(nodeToUpdate->next->filename,filename) == 0)
-            {
-                printf("update index %d file %s - %s %d\n", index, filename, nodeToUpdate->next->filename, nodeToUpdate->next->val);
-                push(nodeToUpdate,filename);   
-                printf("update index %d file %s - %s %d\n", index, filename, nodeToUpdate->next->filename, nodeToUpdate->next->val);
+            {                
+                push(nodeToUpdate,filename);                   
                 newNode = 0;           
             }
                 
@@ -64,7 +67,11 @@ void push_to_hash(int index, char* filename)
             
         }                 
     }
-     
+
+    /* 
+    check if need to allocate more memory, 
+    since this is the first time this value apperas for this input file 
+    */
     if (newNode == 1) {
         nodeToUpdate->next = (node_int *) malloc(sizeof(node_int));            
         push(nodeToUpdate,filename);
@@ -77,25 +84,18 @@ int main(int argc, char **argv)
     int i = 1; /* argv[0] is the program itself, so we need to iterate arguments from 1 */    
     FILE *fp; 
     char buff[BUFSIZE]; /* a buffer to hold the data from the input */
-    
+    int k = 0;
 
     init_hash(hash_table);
     
-
-
     /* handle input */
     while(i < argc)
     {
-        printf("\nHandle file number: %d\n", i);
-        printf("\nHandle file name: %s\n", argv[i]);
         fp = fopen(argv[i], "r"); /* "r" = open for reading */
 
         /* loop throw each number in the current input */
         while (fscanf(fp,"%s ",buff)==1)
         {
-            printf("%d\n", atoi(buff));
-            
-            /*push(hash_table[atoi(buff)],1);*/
             push_to_hash(atoi(buff),argv[i]);
         }
             
@@ -105,16 +105,14 @@ int main(int argc, char **argv)
     }
     
     printf("\nPRINT LIST \n");
-    /*push(hash_table[2],4);*/
-    print_list(hash_table[7]);
-    printf("\n");
-    print_list(hash_table[24]);
-    printf("\n");
-    print_list(hash_table[23]);  
-
-    printf("\n");
-    print_list(hash_table[9]);        
- 
+    /* */
+    while (k < NUMSIZE)
+    {
+        print_list(hash_table[k],k); 
+        k++;
+    }
+    
+    
     printf("\n");
     return 0;
 }
