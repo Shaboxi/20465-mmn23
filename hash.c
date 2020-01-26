@@ -90,6 +90,13 @@ int main(int argc, char **argv)
     char buff[BUFSIZE]; /* a buffer to hold the data from the input */
     int k = 0;
 
+    /* no input found */
+    if(argc == 1)
+    {
+        printf("No input files, exit program.\n");
+        return 0;
+    }
+
     /* init all the cells in the array */
     init_hash();
     
